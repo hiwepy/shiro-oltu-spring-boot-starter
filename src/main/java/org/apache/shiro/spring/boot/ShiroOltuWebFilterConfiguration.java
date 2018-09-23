@@ -1,20 +1,19 @@
 package org.apache.shiro.spring.boot;
 
-import org.apache.shiro.spring.boot.cache.ShiroEhCache2CacheConfiguration;
-import org.apache.shiro.spring.boot.kisso.KissoStatelessPrincipalRepository;
-import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import win.zqxu.shiro.oltu.web.OAuthAuthenticationFilter;
 
 
 /**
@@ -202,36 +201,46 @@ import org.springframework.context.annotation.Configuration;
  * </table>
  * 自定义Filter通过@Bean注解后，被Spring Boot自动注册到了容器的Filter chain中，这样导致的结果是，所有URL都会被自定义Filter过滤，而不是Shiro中配置的一部分URL。
  * https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-disable-registration-of-a-servlet-or-filter
- * https://gitee.com/baomidou/kisso
+ * http://www.jianshu.com/p/bf79fdab9c19
+ * https://www.cnblogs.com/wxy540843763/p/7675946.html
+ * http://jinnianshilongnian.iteye.com/blog/2038646
  */
 @Configuration
-@AutoConfigureBefore(ShiroWebAutoConfiguration.class)
-@AutoConfigureAfter(ShiroEhCache2CacheConfiguration.class)
+@AutoConfigureBefore( name = {
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration",  // shiro-spring-boot-web-starter
+	"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration" // spring-boot-starter-shiro-biz
+})
+@ConditionalOnWebApplication
+//@ConditionalOnClass({ org.scribe.up.provider.ProvidersDefinition.class, org.scribe.oauth.OAuth20ServiceImpl.class, io.buji.oauth.OAuthRealm.class })
 @ConditionalOnProperty(prefix = ShiroOltuProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroOltuProperties.class })
-public class ShiroOltuAutoConfiguration implements ApplicationContextAware {
+public class ShiroOltuWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(ShiroOltuAutoConfiguration.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(ShiroOltuWebFilterConfiguration.class);
 	private ApplicationContext applicationContext;
-	/*
-	@Bean
-	@ConditionalOnMissingBean
-	public SSOAuthorization kissoAuthorization() {
-		return new AuthDefaultImpl();
+	
+	@Autowired
+	private ShiroBizProperties properties;
+	@Autowired
+	private ShiroOltuProperties oltuProperties;
+	
+	@Bean("oltuOauth2")
+	public FilterRegistrationBean<OAuthAuthenticationFilter> oauthFilter(){
+		
+		OAuthAuthenticationFilter oauthFilter = new OAuthAuthenticationFilter();
+		
+		oauthFilter.setFailureURI(oltuProperties.getFailureURI());
+		oauthFilter.setLoginUrl(properties.getLoginUrl());
+		oauthFilter.setState(oltuProperties.getState());
+		oauthFilter.setSuccessUrl(properties.getSuccessUrl());
+		
+		FilterRegistrationBean<OAuthAuthenticationFilter> registration = new FilterRegistrationBean<OAuthAuthenticationFilter>(); 
+		registration.setFilter(oauthFilter);
+	    registration.setEnabled(false);
+	    
+	    return registration;
 	}
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public SSOHandlerInterceptor kissoHandlerInterceptor() {
-		return new KissoDefaultHandler();
-	}*/
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public KissoStatelessPrincipalRepository kissoPrincipalRepository() {
-		return new KissoStatelessPrincipalRepository();
-	}
-	
+ 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
