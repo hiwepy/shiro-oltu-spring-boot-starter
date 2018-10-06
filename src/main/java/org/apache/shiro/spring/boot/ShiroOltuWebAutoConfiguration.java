@@ -31,32 +31,29 @@ public class ShiroOltuWebAutoConfiguration extends AbstractShiroWebConfiguration
 	
 	@Bean
 	public Realm oltuOauth2Realm(CredentialsMatcher credentialsMatcher) {
-		
-		OAuthAuthorizeRealm oauthRealm = new OAuthAuthorizeRealm();
-		
+
+		OAuthAuthorizeRealm oauthRealm = new OAuthAuthorizeRealm(oltuProperties.getTokenURI(),
+				oltuProperties.getClientId(), oltuProperties.getClientSecret());
+
 		// 认证缓存配置:无状态情况不缓存认证信息
 		oauthRealm.setAuthenticationCachingEnabled(properties.isAuthenticationCachingEnabled());
 		oauthRealm.setAuthenticationCacheName(properties.getAuthenticationCacheName());
 		// 授权缓存配置:无状态情况不缓存认证信息
 		oauthRealm.setAuthorizationCachingEnabled(properties.isAuthorizationCachingEnabled());
 		oauthRealm.setAuthorizationCacheName(properties.getAuthorizationCacheName());
-		
+
 		oauthRealm.setCacheManager(cacheManager);
-		//缓存相关的配置：采用提供的默认配置即可
+		// 缓存相关的配置：采用提供的默认配置即可
 		oauthRealm.setCachingEnabled(properties.isCachingEnabled());
 
-		oauthRealm.setClientId(oltuProperties.getClientId());
-		oauthRealm.setClientSecret(oltuProperties.getClientSecret());
 		// 凭证匹配器：该对象主要做密码校验
 		oauthRealm.setCredentialsMatcher(credentialsMatcher);
-		
+
 		oauthRealm.setDefaultPermissions(oltuProperties.getDefaultPermissions());
 		oauthRealm.setDefaultRoles(oltuProperties.getDefaultRoles());
-		
+
 		oauthRealm.setPermissionResolver(permissionResolver);
 		oauthRealm.setRolePermissionResolver(rolePermissionResolver);
-		
-		oauthRealm.setTokenURI(oltuProperties.getTokenURI());
 		
 		return oauthRealm;
 	}
