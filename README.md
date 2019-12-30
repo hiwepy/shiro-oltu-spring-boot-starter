@@ -1,4 +1,4 @@
-# spring-boot-starter-shiro-oltu
+# shiro-oltu-spring-boot-starter
 shiro starter for spring boot
 
 ### 说明
@@ -12,7 +12,7 @@ shiro starter for spring boot
 ``` xml
 <dependency>
 	<groupId>${project.groupId}</groupId>
-	<artifactId>spring-boot-starter-shiro-oltu</artifactId>
+	<artifactId>shiro-oltu-spring-boot-starter</artifactId>
 	<version>${project.version}</version>
 </dependency>
 ```
