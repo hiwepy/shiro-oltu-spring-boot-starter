@@ -2,7 +2,6 @@ package org.apache.shiro.spring.boot;
 
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -12,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import win.zqxu.shiro.oltu.web.OAuthAuthenticationFilter;
 
 
@@ -38,14 +36,9 @@ public class ShiroOltuWebFilterConfiguration extends AbstractShiroWebFilterConfi
 
 	//private static final Logger LOG = LoggerFactory.getLogger(ShiroOltuWebFilterConfiguration.class);
 	private ApplicationContext applicationContext;
-	
-	@Autowired
-	private ShiroBizProperties properties;
-	@Autowired
-	private ShiroOltuProperties oltuProperties;
-	
+
 	@Bean("oltu")
-	public FilterRegistrationBean<OAuthAuthenticationFilter> oauthFilter(){
+	public FilterRegistrationBean<OAuthAuthenticationFilter> oauthFilter(ShiroBizProperties properties, ShiroOltuProperties oltuProperties) {
 		
 		OAuthAuthenticationFilter oauthFilter = new OAuthAuthenticationFilter();
 		

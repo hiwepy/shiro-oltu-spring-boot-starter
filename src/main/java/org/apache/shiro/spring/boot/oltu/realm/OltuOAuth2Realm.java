@@ -52,9 +52,12 @@ public class OltuOAuth2Realm extends AuthorizingRealm {
         this.redirectUrl = redirectUrl;
     }
 
+    /**
+     * 只支持OltuOAuth2Token类型的Token
+     */
     @Override
     public boolean supports(AuthenticationToken token) {
-        return token instanceof OltuOAuth2Token;//表示此Realm只支持OAuth2Token类型
+        return token instanceof OltuOAuth2Token;
     }
 
     @Override
@@ -68,9 +71,7 @@ public class OltuOAuth2Realm extends AuthorizingRealm {
         OltuOAuth2Token oAuth2Token = (OltuOAuth2Token) token;
         String code = oAuth2Token.getAuthCode();
         String username = extractUsername(code);
-
-        SimpleAuthenticationInfo authenticationInfo =
-                new SimpleAuthenticationInfo(username, code, getName());
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(username, code, getName());
         return authenticationInfo;
     }
 
