@@ -14,6 +14,7 @@ import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.util.StringUtils;
 
+/**\n * Authentication filter for OAuth2 using Apache Oltu.\n *\n * @author [@Loong Wan](https://github.com/loong10k)\n * @since 1.0.0\n */
 public class OltuOAuth2AuthenticationFilter extends AuthenticatingFilter {
 
     //oauth2 authc code参数名
