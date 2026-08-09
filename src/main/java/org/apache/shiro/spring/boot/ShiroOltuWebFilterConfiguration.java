@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.apache.shiro.spring.boot.utils.JakartaFilterAdapter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -45,19 +46,20 @@ public class ShiroOltuWebFilterConfiguration extends AbstractShiroWebFilterConfi
 	private ShiroOltuProperties oltuProperties;
 	
 	@Bean("oltu")
-	public FilterRegistrationBean<OAuthAuthenticationFilter> oauthFilter(){
-		
+	@SuppressWarnings("rawtypes")
+	public FilterRegistrationBean oauthFilter(){
+
 		OAuthAuthenticationFilter oauthFilter = new OAuthAuthenticationFilter();
-		
+
 		oauthFilter.setFailureURI(oltuProperties.getFailureURI());
 		oauthFilter.setLoginUrl(properties.getLoginUrl());
 		oauthFilter.setState(oltuProperties.getState());
 		oauthFilter.setSuccessUrl(properties.getSuccessUrl());
-		
-		FilterRegistrationBean<OAuthAuthenticationFilter> registration = new FilterRegistrationBean<OAuthAuthenticationFilter>(); 
-		registration.setFilter(oauthFilter);
+
+		FilterRegistrationBean registration = new FilterRegistrationBean<>();
+		registration.setFilter(new JakartaFilterAdapter(oauthFilter));
 	    registration.setEnabled(false);
-	    
+
 	    return registration;
 	}
  

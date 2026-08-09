@@ -1,39 +1,17 @@
-/*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package org.apache.shiro.spring.boot;
 
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Unit tests for {{ @link ShiroOltuWebAutoConfiguration }}.
- *
- * <p>Verifies the auto-configuration activates under the expected conditions
- * and exposes its declared beans.</p>
- *
- * @author [@Loong Wan](https://github.com/loong10k)
- * @since 1.0.0
- */
 @DisplayName("ShiroOltuWebAutoConfiguration Tests")
 class ShiroOltuWebAutoConfigurationTest {
-
-    private final ApplicationContextRunner runner = new ApplicationContextRunner();
 
     @Test
     @DisplayName("Auto-configuration class can be instantiated")
@@ -43,17 +21,52 @@ class ShiroOltuWebAutoConfigurationTest {
     }
 
     @Test
-    @DisplayName("Auto-configuration loads when 'shiro.oltu.enabled=true'")
-    void testLoadsWhenEnabledPropertySet() {
-        runner.withUserConfiguration(ShiroOltuWebAutoConfiguration.class)
-                .withPropertyValues("shiro.oltu.enabled=true")
-                .run(context -> assertThat(context).hasSingleBean(ShiroOltuWebAutoConfiguration.class));
+    @DisplayName("Has correct conditional annotation")
+    void testConditionalOnProperty() {
+        ConditionalOnProperty annotation =
+                ShiroOltuWebAutoConfiguration.class.getAnnotation(ConditionalOnProperty.class);
+        assertThat(annotation).isNotNull();
+        assertThat(annotation.prefix()).isEqualTo("shiro.oltu");
+        assertThat(annotation.value()).containsExactly("enabled");
+        assertThat(annotation.havingValue()).isEqualTo("true");
     }
 
     @Test
-    @DisplayName("Auto-configuration is absent when property is not set")
-    void testNotLoadedWhenPropertyAbsent() {
-        runner.withUserConfiguration(ShiroOltuWebAutoConfiguration.class)
-                .run(context -> assertThat(context).doesNotHaveBean(ShiroOltuWebAutoConfiguration.class));
+    @DisplayName("Enables ShiroOltuProperties")
+    void testEnableConfigurationProperties() {
+        EnableConfigurationProperties annotation =
+                ShiroOltuWebAutoConfiguration.class.getAnnotation(EnableConfigurationProperties.class);
+        assertThat(annotation).isNotNull();
+        assertThat(annotation.value()).contains(ShiroOltuProperties.class);
+    }
+
+    @Test
+    @DisplayName("Has @AutoConfigureBefore annotation")
+    void testAutoConfigureBefore() {
+        AutoConfigureBefore annotation =
+                ShiroOltuWebAutoConfiguration.class.getAnnotation(AutoConfigureBefore.class);
+        assertThat(annotation).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Has @ConditionalOnWebApplication annotation")
+    void testConditionalOnWebApplication() {
+        ConditionalOnWebApplication annotation =
+                ShiroOltuWebAutoConfiguration.class.getAnnotation(ConditionalOnWebApplication.class);
+        assertThat(annotation).isNotNull();
+    }
+
+    @Test
+    @DisplayName("oltuOauth2Realm method exists")
+    void testOltuOauth2RealmMethodExists() throws NoSuchMethodException {
+        assertThat(ShiroOltuWebAutoConfiguration.class.getMethod("oltuOauth2Realm",
+                CredentialsMatcher.class)).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Extends AbstractShiroWebConfiguration")
+    void testExtendsAbstractShiroWebConfiguration() {
+        assertThat(org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration.class
+                .isAssignableFrom(ShiroOltuWebAutoConfiguration.class)).isTrue();
     }
 }

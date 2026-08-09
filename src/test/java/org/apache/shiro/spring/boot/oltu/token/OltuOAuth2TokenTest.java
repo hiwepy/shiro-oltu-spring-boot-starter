@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package org.apache.shiro.spring.boot.oltu.token;
 
 import org.junit.jupiter.api.DisplayName;
@@ -20,19 +5,51 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Unit tests for {{ @link OltuOAuth2Token }}.
- *
- * @author [@Loong Wan](https://github.com/loong10k)
- * @since 1.0.0
- */
 @DisplayName("OltuOAuth2Token Tests")
 class OltuOAuth2TokenTest {
 
     @Test
-    @DisplayName("Instance can be created via constructor")
-    void testInstantiation() {
-        OltuOAuth2Token instance = new OltuOAuth2Token(null);
-        assertThat(instance).isNotNull();
+    @DisplayName("Constructor with authCode")
+    void testConstructor() {
+        OltuOAuth2Token token = new OltuOAuth2Token("testCode");
+        assertThat(token).isNotNull();
+        assertThat(token.getAuthCode()).isEqualTo("testCode");
+    }
+
+    @Test
+    @DisplayName("Implements AuthenticationToken")
+    void testImplementsAuthenticationToken() {
+        assertThat(org.apache.shiro.authc.AuthenticationToken.class
+                .isAssignableFrom(OltuOAuth2Token.class)).isTrue();
+    }
+
+    @Test
+    @DisplayName("getCredentials returns authCode")
+    void testGetCredentials() {
+        OltuOAuth2Token token = new OltuOAuth2Token("myCode");
+        assertThat(token.getCredentials()).isEqualTo("myCode");
+    }
+
+    @Test
+    @DisplayName("authCode getter/setter")
+    void testAuthCode() {
+        OltuOAuth2Token token = new OltuOAuth2Token("initial");
+        token.setAuthCode("updated");
+        assertThat(token.getAuthCode()).isEqualTo("updated");
+    }
+
+    @Test
+    @DisplayName("principal getter/setter")
+    void testPrincipal() {
+        OltuOAuth2Token token = new OltuOAuth2Token("code");
+        token.setPrincipal("user123");
+        assertThat(token.getPrincipal()).isEqualTo("user123");
+    }
+
+    @Test
+    @DisplayName("getPrincipal returns null by default")
+    void testDefaultPrincipal() {
+        OltuOAuth2Token token = new OltuOAuth2Token("code");
+        assertThat(token.getPrincipal()).isNull();
     }
 }
