@@ -22,7 +22,7 @@ import win.zqxu.shiro.oltu.client.OAuthAuthorizeRealm;
 //@ConditionalOnClass({ org.scribe.up.provider.ProvidersDefinition.class, org.scribe.oauth.OAuth20ServiceImpl.class, io.buji.oauth.OAuthRealm.class })
 @ConditionalOnProperty(prefix = ShiroOltuProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroOltuProperties.class })
-/**\n * Auto-configuration for Shiro OAuth2 authentication using Apache Oltu.\n *\n * @author [@Loong Wan](https://github.com/loong10k)\n * @since 1.0.0\n */
+/**\n * Auto-configuration for Shiro OAuth2 authentication using Apache Oltu.\n *\n * @author <a href="https://github.com/loong10k">Loong Wan</a>\n * @since 1.0.0\n */
 public class ShiroOltuWebAutoConfiguration extends AbstractShiroWebConfiguration {
 
 	@Autowired
