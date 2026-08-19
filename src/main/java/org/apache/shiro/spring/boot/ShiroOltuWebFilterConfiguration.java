@@ -33,6 +33,12 @@ import win.zqxu.shiro.oltu.web.OAuthAuthenticationFilter;
 })
 @ConditionalOnWebApplication
 //@ConditionalOnClass({ org.scribe.up.provider.ProvidersDefinition.class, org.scribe.oauth.OAuth20ServiceImpl.class, io.buji.oauth.OAuthRealm.class })
+/**
+ * <p>Configuration properties.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @ConditionalOnProperty(prefix = ShiroOltuProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroOltuProperties.class })
 public class ShiroOltuWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
@@ -47,6 +53,11 @@ public class ShiroOltuWebFilterConfiguration extends AbstractShiroWebFilterConfi
 	
 	@Bean("oltu")
 	@SuppressWarnings("rawtypes")
+	/**
+	 * OAuth Filter.
+	 *
+	 * @return the result
+	 */
 	public FilterRegistrationBean oauthFilter(){
 
 		OAuthAuthenticationFilter oauthFilter = new OAuthAuthenticationFilter();
@@ -64,10 +75,21 @@ public class ShiroOltuWebFilterConfiguration extends AbstractShiroWebFilterConfi
 	}
  
 	@Override
+	/**
+	 * Sets the application context.
+	 *
+	 * @param applicationContext the application context
+	 * @throws BeansException if an error occurs
+	 */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+	/**
+	 * Returns the application context.
+	 *
+	 * @return the application context
+	 */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

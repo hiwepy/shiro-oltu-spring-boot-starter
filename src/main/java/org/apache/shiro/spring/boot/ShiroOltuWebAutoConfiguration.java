@@ -31,6 +31,12 @@ public class ShiroOltuWebAutoConfiguration extends AbstractShiroWebConfiguration
 	private ShiroOltuProperties oltuProperties;
 	
 	@Bean
+	/**
+	 * oltu OAuth2 Realm.
+	 *
+	 * @param credentialsMatcher the credentials matcher
+	 * @return the result
+	 */
 	public Realm oltuOauth2Realm(CredentialsMatcher credentialsMatcher) {
 
 		OAuthAuthorizeRealm oauthRealm = new OAuthAuthorizeRealm(oltuProperties.getTokenURI(),

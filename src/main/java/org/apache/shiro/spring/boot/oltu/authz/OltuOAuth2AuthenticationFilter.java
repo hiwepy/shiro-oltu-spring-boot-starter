@@ -28,22 +28,47 @@ public class OltuOAuth2AuthenticationFilter extends AuthenticatingFilter {
 
     private String failureUrl;
 
+    /**
+     * Sets the authc code param.
+     *
+     * @param authcCodeParam the authc code param
+     */
     public void setAuthcCodeParam(String authcCodeParam) {
         this.authcCodeParam = authcCodeParam;
     }
 
+    /**
+     * Sets the client id.
+     *
+     * @param clientId the client id
+     */
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
+    /**
+     * Sets the redirect url.
+     *
+     * @param redirectUrl the redirect url
+     */
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
+    /**
+     * Sets the response type.
+     *
+     * @param responseType the response type
+     */
     public void setResponseType(String responseType) {
         this.responseType = responseType;
     }
 
+    /**
+     * Sets the failure url.
+     *
+     * @param failureUrl the failure url
+     */
     public void setFailureUrl(String failureUrl) {
         this.failureUrl = failureUrl;
     }
